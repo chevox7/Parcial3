@@ -1,0 +1,59 @@
+
+
+CREATE TABLE "public"."DimAirline"(
+ "Airline_key" INTEGER NOT NULL IDENTITY (1,1),
+ "AirlLine_id" VARCHAR (10) NOT NULL,
+ "Airline_descripcion" VARCHAR (100) NOT NULL,
+ UNIQUE ("Airline_key"),
+ PRIMARY KEY("Airline_key"))
+ DISTSTYLE KEY DISTKEY("AirlLine_id")
+ SORTKEY ("AirlLine_id")
+ ENCODE AUTO;
+
+ CREATE TABLE "public"."DimDate"(
+ "Date_key" INTEGER NOT NULL,
+ "Date_flight" DATE NOT NULL,
+ "Year" VARCHAR (4) NOT NULL,
+ "Qarter" VARCHAR (1) NOT NULL,
+ "Month" VARCHAR (2) NOT NULL,
+ "DayOfMonth" VARCHAR (2) NOT NULL,
+ "DayOfWeek" VARCHAR (2) NOT NULL,
+ UNIQUE ("Date_key"),
+ PRIMARY KEY("Date_key"))
+ DISTSTYLE KEY DISTKEY("Date_key")
+ SORTKEY ("Date_key")
+ ENCODE AUTO;
+
+ CREATE TABLE "public"."FactFlight"(
+ "Flight_key" INTEGER NOT NULL,
+ "Flight_number" Varchar (10) NOT NULL,
+ "Airline_key" INTEGER NOT NULL,
+ "Date_key" INTEGER NOT NULL,
+ "Airline" Varchar (100) NOT NULL,
+ "Origin" Varchar(20) NOT NULL,
+ "Dest" Varchar(20) NOT NULL,
+ "TotalFlight" INTEGER DEFAULT 1 NOT NULL,
+ "TotalFlightCancelled" INTEGER DEFAULT 0 NOT NULL,
+ "TotalFlightDelayed" INTEGER DEFAULT 0 NOT NULL,
+ "TotalFlightDiverted" INTEGER DEFAULT 0 NOT NULL,
+ "TotalFlightDelayedArrival" INTEGER DEFAULT 0 NOT NULL,
+ "TotalFlightDelayedDeparture" INTEGER DEFAULT 0 NOT NULL,
+ "ArrDelayMinutes" INTEGER DEFAULT 0 NOT NULL,
+ "DepDelayMinutes" INTEGER DEFAULT 0 NOT NULL,
+ "DelayMinutes" INTEGER DEFAULT 0 NOT NULL,
+ "CancellationWeather" INTEGER DEFAULT 0 NOT NULL,
+ "CancellationSecurity" INTEGER DEFAULT 0 NOT NULL,
+ "CancellationCarrier" INTEGER DEFAULT 0 NOT NULL,
+ "CancellationNAS" INTEGER DEFAULT 0 NOT NULL,
+ "DelayWeather" INTEGER DEFAULT 0 NOT NULL,
+ "DelaySecurity" INTEGER DEFAULT 0 NOT NULL,
+ "DelayCarrier" INTEGER DEFAULT 0 NOT NULL,
+ "DelayNAS" INTEGER DEFAULT 0 NOT NULL,
+ "DelayAircraft" INTEGER DEFAULT 0 NOT NULL,
+ UNIQUE ("Flight_key", "Date_key", "Airline_key"),
+ PRIMARY KEY("Flight_key", "Date_key", "Airline_key"),
+ Foreign key("Airline_key") references "DimAirline"("Airline_key"),
+ Foreign key("Date_key") references "DimDate"("Date_key"))
+ DISTSTYLE KEY DISTKEY("Flight_key")
+ SORTKEY ("Flight_key", "Date_key", "Airline_key")
+ ENCODE AUTO;
